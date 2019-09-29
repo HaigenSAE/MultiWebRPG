@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SocketIO;
+using UnitySocketIO;
 using Project.Utility;
 using System;
 
 namespace Project.Networking
 {
-	public class NetworkClient : SocketIOComponent
+	public class NetworkClient : SocketIOController
 	{
 		[Header("Network Client")]
 		[SerializeField]
@@ -20,17 +20,17 @@ namespace Project.Networking
 		private Dictionary<string, NetworkIdentity> serverObjects;
 
 		// Start is called before the first frame update
-		public override void Start()
+		public void Start()
 		{
-			base.Start();
+			//base.Start();
 			Initialize();
 			SetupEvents();
 		}
 
 		// Update is called once per frame
-		public override void Update()
+		public void Update()
 		{
-			base.Update();
+			//base.Update();
 		}
 
 		private void Initialize()

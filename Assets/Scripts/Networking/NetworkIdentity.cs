@@ -1,5 +1,5 @@
 ﻿using Project.Utility.Attributes;
-using SocketIO;
+using UnitySocketIO.SocketIO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace Project.Networking
 		[GreyOut]
 		private bool isControlling;
 
-		private SocketIOComponent socket;
+		private BaseSocketIO socket;
 
 		public void Awake()
 		{
@@ -29,7 +29,7 @@ namespace Project.Networking
 			isControlling = (NetworkClient.ClientID == ID) ? true : false; //Check incoming ID vs the one we have saved from server
 		}
 
-		public void SetSocketReference(SocketIOComponent Socket)
+		public void SetSocketReference(BaseSocketIO Socket)
 		{
 			socket = Socket;
 		}
@@ -44,7 +44,7 @@ namespace Project.Networking
 			return isControlling;
 		}
 
-		public SocketIOComponent GetSocket()
+		public BaseSocketIO GetSocket()
 		{
 			return socket;
 		}
