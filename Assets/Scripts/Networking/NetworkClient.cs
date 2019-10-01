@@ -13,7 +13,7 @@ namespace Project.Networking
 		[SerializeField]
 		private Transform networkContainer;
 		[SerializeField]
-		private GameObject playerPrefab;
+		private GameObject playerPrefab;//
 
 		public static string ClientID { get; private set; }
 
