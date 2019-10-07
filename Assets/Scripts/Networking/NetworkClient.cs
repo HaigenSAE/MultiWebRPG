@@ -55,8 +55,9 @@ namespace Project.Networking
 				//Handle all spawning of players
 				//Passed Data
 				string id = E.data["id"].ToString().RemoveQuotes();
-
-				GameObject go = Instantiate(playerPrefab, networkContainer);
+                GameObject[] spawns = GameObject.FindGameObjectsWithTag("Respawn");
+                Transform initSpawn = spawns[UnityEngine.Random.Range(0, spawns.Length)].transform;
+				GameObject go = Instantiate(playerPrefab, initSpawn.position, initSpawn.rotation, networkContainer);
 				go.name = string.Format("Player ({0})", id);
 				NetworkIdentity ni = go.GetComponent<NetworkIdentity>();
 				ni.SetControllerID(id);
