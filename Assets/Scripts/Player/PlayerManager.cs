@@ -14,20 +14,27 @@ namespace Project.Player
         public bool mouseInput;
         public bool isInInteraction;
 
-		[Header("Class References")]
+        public float factor = 1.0f;
+
+        [Header("Class References")]
 		[SerializeField]
 		private NetworkIdentity networkIdentity;
 
-		// Update is called once per frame
-		void Update()
+        private void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
 		{
 			if (networkIdentity.IsControlling())
 			{
 				CheckMovement();
 			}
-		}
-
-		private void CheckMovement()
+        }
+        
+        private void CheckMovement()
 		{
             if (Input.GetMouseButton(0))
             {

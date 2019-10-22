@@ -396,7 +396,7 @@ MonoBehaviour:
   pingInterval: 25
   pingTimeout: 60
   networkContainer: {fileID: 1048838981}
-  playerPrefab: {fileID: 977691883727168844, guid: e58b68441b9d1bc48b9aff8a9a13e4d4,
+  playerPrefab: {fileID: 2273309408628922415, guid: c48cd775782d5a845bd13d861f1a6dea,
     type: 3}
 --- !u!4 &724435164
 Transform:
