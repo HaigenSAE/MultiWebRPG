@@ -3,40 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PlayerStretch : MonoBehaviour
+namespace Project.Player
 {
-    public GameObject root;
-    public Vector3 newDest;
-
-    public float factor = 1.0f;
-
-    void Start()
+    public class PlayerStretch : MonoBehaviour
     {
-        root = transform.parent.gameObject;
-        SetPos(transform.position, transform.position);
-    }
+        public GameObject root;
+        public Vector3 newDest;
 
-    void Update()
-    {
-        if(Vector3.Distance(root.GetComponent<NavMeshAgent>().destination,transform.position) > 1)
+        public float factor = 1.0f;
+
+        void Start()
         {
-            newDest = root.GetComponent<NavMeshAgent>().destination;
+            root = transform.parent.gameObject;
+            SetPos(transform.position, transform.position);
         }
-        else
-        {
-            newDest = transform.position;
-        }
-        SetPos(transform.position, newDest);
-    }
 
-    void SetPos(Vector3 start, Vector3 end)
-    {
-        var dir = end - start;
-        var mid = (dir) / 2.0f + start;
-        //transform.position = mid;
-        transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-        Vector3 scale = transform.localScale;
-        scale.y = Mathf.Clamp(dir.magnitude * factor,1,100);
-        transform.localScale = scale;
+        void Update()
+        {
+            if (Vector3.Distance(root.GetComponent<PlayerManager>().destination, transform.position) > 1)
+            {
+                newDest = root.GetComponent<PlayerManager>().destination;
+            }
+            else
+            {
+                newDest = transform.position;
+            }
+            SetPos(transform.position, newDest);
+        }
+
+        void SetPos(Vector3 start, Vector3 end)
+        {
+            var dir = end - start;
+            var mid = (dir) / 2f + start;
+            //transform.position = mid;
+            transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
+            Vector3 scale = transform.localScale;
+            scale.y = Mathf.Clamp(dir.magnitude / 2 * factor, 1, 100);
+            transform.localScale = scale;
+        }
     }
 }
+

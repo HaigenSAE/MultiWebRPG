@@ -13,8 +13,8 @@ namespace Project.Player
 		private float speed = 4;
         public bool mouseInput;
         public bool isInInteraction;
-
-        public float factor = 1.0f;
+        private bool doMove;
+        public Vector3 destination;
 
         [Header("Class References")]
 		[SerializeField]
@@ -22,7 +22,7 @@ namespace Project.Player
 
         private void Start()
         {
-
+            destination = transform.position;
         }
 
         // Update is called once per frame
@@ -44,16 +44,26 @@ namespace Project.Player
                 if (Physics.Raycast(ray, out hit))
                 {
                     NavMeshPath path = new NavMeshPath();
+                    NavMeshHit navHit = new NavMeshHit();
                     //Don't try to move if we didn't hit a navmesh
                     //We do want to move if we hit an interactable and we want to begin the interaction, we also don't want to move once inside the interaction.
                     if (!isInInteraction)
                     {
                         if (NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path))
-                            GetComponent<NavMeshAgent>().SetDestination(hit.point);
+                        {
+                            destination = path.corners[path.corners.Length - 1];
+                            destination = new Vector3(destination.x, transform.position.y, destination.z);
+                            doMove = true;
+                        }
+                        //If we hit the interactable object
                         if (!mouseInput && hit.transform.gameObject.tag == "Interactable")
                         {
-                            //move to object, then bring up UI for interactions
-                            GetComponent<NavMeshAgent>().SetDestination(hit.point);
+                            //Get the closest possible point we can travel to
+                            NavMesh.SamplePosition(hit.point, out navHit, 5.0f, NavMesh.AllAreas);
+                            destination = navHit.position;
+                            destination = new Vector3(destination.x, transform.position.y, destination.z);
+                            doMove = true;
+                            //Move to position outside of table and bring up UI
                             hit.transform.GetComponent<Interactable>().OpenInteractable();
                             isInInteraction = true;
                         }
@@ -66,6 +76,16 @@ namespace Project.Player
             {
                 //Reset mouse input
                 mouseInput = false;
+            }
+
+            if(doMove)
+            {
+                //Actual movement, nice lerpy movement
+                transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime * speed);
+                if(Vector3.Distance(transform.position, destination) <= 0.1f)
+                {
+                    doMove = false;
+                }
             }
         }
 	}

@@ -205,7 +205,7 @@ MonoBehaviour:
   speed: 6
   mouseInput: 0
   isInInteraction: 0
-  factor: 1
+  destination: {x: 0, y: 0, z: 0}
   networkIdentity: {fileID: 2273309408628922384}
 --- !u!195 &2273309408628922413
 NavMeshAgent:
@@ -214,7 +214,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2273309408628922415}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 50
