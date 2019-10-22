@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: 21631857a14b99e4288bedcdedc86691
+guid: c6c8b68542a3f224a8047aa449d05406
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - mg_panelPrefab: {fileID: 1153135196701052997, guid: 6ef3bfd83510bc043b750835a31cf660,
-      type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

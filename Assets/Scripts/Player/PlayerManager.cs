@@ -64,7 +64,7 @@ namespace Project.Player
                             destination = new Vector3(destination.x, transform.position.y, destination.z);
                             doMove = true;
                             //Move to position outside of table and bring up UI
-                            hit.transform.GetComponent<Interactable>().OpenInteractable();
+                            hit.transform.GetComponent<Interactable>().OpenInteractable(gameObject);
                             isInInteraction = true;
                         }
                     }

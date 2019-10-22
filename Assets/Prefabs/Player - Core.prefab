@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   root: {fileID: 0}
   newDest: {x: 0, y: 0, z: 0}
-  factor: 0.5
+  factor: 0.75
 --- !u!1 &2273309408628922415
 GameObject:
   m_ObjectHideFlags: 0
