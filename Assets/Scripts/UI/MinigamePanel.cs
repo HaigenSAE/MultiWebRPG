@@ -9,18 +9,17 @@ namespace Project.Player
     {
         public Button backButton;
         public GameObject owner;
+        public GameObject[] miniGames;
+        public GameObject curMinigame;
+        public Text title;
 
         // Start is called before the first frame update
         void Start()
         {
             backButton = GetComponentInChildren<Button>();
             backButton.onClick.AddListener(BackPressed);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            //curMinigame = Instantiate(miniGames[Random.Range(0, miniGames.Length - 1)], transform);
+            
         }
 
         public void BackPressed()
@@ -28,6 +27,11 @@ namespace Project.Player
             //Exit minigame
             owner.GetComponent<Interactable>().CloseInteractable();
             Destroy(gameObject);
+        }
+
+        public void Success()
+        {
+            title.text = "Success!";
         }
     }
 

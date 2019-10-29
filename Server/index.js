@@ -38,6 +38,11 @@ io.on('connection', function(socket){
         socket.broadcast.emit('updatePosition', player);
     });
 
+    socket.on('successfulMinigame', function(data)
+    {
+        //recieve minigame type, send back random winnings (exp)
+    });
+
     socket.on('disconnect', function(){
         console.log('Player disconnected');
         delete players[thisPlayerID];

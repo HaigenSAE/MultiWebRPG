@@ -84,6 +84,12 @@ namespace Project.Networking
 				NetworkIdentity ni = serverObjects[id];
 				ni.transform.position = new Vector3(x, y, z);
 			});
+
+            On("successfulMinigame", (E) =>
+            {
+                string id = E.data["id"].ToString().RemoveQuotes();
+                //send success, receive winnings
+            });
 		}
 
 	}
