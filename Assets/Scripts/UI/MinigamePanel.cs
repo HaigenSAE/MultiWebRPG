@@ -18,7 +18,7 @@ namespace Project.Player
         {
             backButton = GetComponentInChildren<Button>();
             backButton.onClick.AddListener(BackPressed);
-            //curMinigame = Instantiate(miniGames[Random.Range(0, miniGames.Length - 1)], transform);
+            curMinigame = Instantiate(miniGames[Random.Range(0, miniGames.Length)], transform);
             
         }
 
