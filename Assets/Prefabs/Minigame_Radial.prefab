@@ -290,6 +290,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goal: {fileID: 4630490731719233873}
   bar: {fileID: 4301816944655392902}
+  fails: 0
   range: 10
   goalRad: 10
-  barSpeed: 1
+  inside: 0
+  barSpeed: 400

@@ -4,24 +4,33 @@ using UnityEngine;
 
 namespace Project.Player
 {
-    public class MinigameRadial : MonoBehaviour
+    public class MinigameRadial : MinigameMaster
     {
-        public GameObject goal;
-        public GameObject bar;
         public int range;
         public int goalRad;
         bool directionLeft;
-        bool inside = false;
+        public bool inside = false;
         public float barSpeed = 1;
-        int fails;
+        private float zRot;
+        private RectTransform brt, grt;
+
+        void Start()
+        {
+            //randomize starting position of goal and paddle
+            brt = bar.GetComponent<RectTransform>();
+            grt = goal.GetComponent<RectTransform>();
+
+            brt.localRotation = Quaternion.Euler(0,0,Random.Range(0,360));
+            grt.localRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        }
 
         // Update is called once per frame
         void Update()
         {
             float curSpeed = barSpeed * Time.deltaTime;
             //move left/right
-            RectTransform brt = bar.GetComponent<RectTransform>();
-            brt.localRotation = Quaternion.Euler(brt.localRotation.x, brt.localRotation.y, brt.localRotation.z + (directionLeft ? -curSpeed : +curSpeed));
+            
+            brt.transform.Rotate(0, 0, directionLeft ? -curSpeed : +curSpeed);
             if (Input.GetMouseButtonDown(0))
             {
                 //was it inside?
@@ -44,8 +53,8 @@ namespace Project.Player
                     directionLeft = !directionLeft;
                 }
             }
-            RectTransform grt = goal.GetComponent<RectTransform>();
-            if (brt.localRotation.z >= grt.localRotation.z - goalRad && brt.localRotation.z <= grt.localRotation.z + goalRad)
+            
+            if (brt.localEulerAngles.z >= grt.localEulerAngles.z - goalRad && brt.localEulerAngles.z <= grt.localEulerAngles.z + goalRad)
             {
                 inside = true;
             }
@@ -53,11 +62,6 @@ namespace Project.Player
             {
                 inside = false;
             }
-        }
-
-        public void Success()
-        {
-
         }
     }
 
