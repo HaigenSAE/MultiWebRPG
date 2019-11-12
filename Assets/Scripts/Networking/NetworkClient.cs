@@ -99,6 +99,7 @@ namespace Project.Networking
 	{
 		public string id;
 		public Position position;
+        public PlayerStats statsClass;
 	}
 
 	[Serializable]
