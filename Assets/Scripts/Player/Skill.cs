@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill : MonoBehaviour
+public class Skill : ScriptableObject
 {
-    public int level;
+    public string skillName;
+    public int curLevel = 1;
     public int curExp;
 
     public int reqXP()
     {
         int xp = 0;
 
-        for (int i = 1; i < level; i++)
+        for (int i = 1; i < curLevel; i++)
             xp += (int)Mathf.Floor(i + 300 * Mathf.Pow(2, i / 7));
 
         return (int)Mathf.Floor(xp / 4);
@@ -26,6 +27,6 @@ public class Skill : MonoBehaviour
 
     public void LevelUp()
     {
-        level++;
+        curLevel++;
     }
 }

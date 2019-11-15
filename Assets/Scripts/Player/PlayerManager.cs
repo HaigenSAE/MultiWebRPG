@@ -15,6 +15,7 @@ namespace Project.Player
         public bool isInInteraction;
         private bool doMove;
         public Vector3 destination;
+        public PlayerStats playerStats;
 
         [Header("Class References")]
 		[SerializeField]
@@ -23,6 +24,7 @@ namespace Project.Player
         private void Start()
         {
             destination = transform.position;
+            playerStats = GetComponent<PlayerStats>();
         }
 
         // Update is called once per frame

@@ -91,8 +91,7 @@ namespace Project.Networking
                 //send success, receive winnings
             });
 		}
-
-	}
+    }
 
 	[Serializable]
 	public class Player

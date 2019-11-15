@@ -206,6 +206,7 @@ MonoBehaviour:
   mouseInput: 0
   isInInteraction: 0
   destination: {x: 0, y: 0, z: 0}
+  playerStats: {fileID: 1304149777191557484}
   networkIdentity: {fileID: 2273309408628922384}
 --- !u!114 &1304149777191557484
 MonoBehaviour:
@@ -219,3 +220,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad91d97992ca0e8459a6b225583d0e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skills:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skillString: 
