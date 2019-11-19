@@ -6,8 +6,7 @@ namespace Project.Player
 {
     public class MinigameRadial : MinigameMaster
     {
-        public int range;
-        public int goalRad;
+        public float goalRad;
         bool directionLeft;
         public bool inside = false;
         public float barSpeed = 1;
@@ -22,6 +21,7 @@ namespace Project.Player
 
             brt.localRotation = Quaternion.Euler(0,0,Random.Range(0,360));
             grt.localRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+            goalRad = goal.GetComponentInChildren<RectTransform>().rect.width + 5;
         }
 
         // Update is called once per frame
