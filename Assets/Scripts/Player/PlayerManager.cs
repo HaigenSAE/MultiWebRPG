@@ -19,7 +19,7 @@ namespace Project.Player
 
         [Header("Class References")]
 		[SerializeField]
-		private NetworkIdentity networkIdentity;
+		public NetworkIdentity networkIdentity;
 
         private void Start()
         {
@@ -36,6 +36,11 @@ namespace Project.Player
 			}
         }
         
+        public void MinigameCompleted()
+        {
+            
+        }
+
         private void CheckMovement()
 		{
             if (Input.GetMouseButton(0))

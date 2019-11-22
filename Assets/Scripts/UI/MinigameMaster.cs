@@ -6,13 +6,10 @@ namespace Project.Player
 {
     public class MinigameMaster : MonoBehaviour
     {
+        public GameObject playerObj;
+        public GameObject ownerInteractable;
         public GameObject goal;
         public GameObject bar;
         public int fails;
-
-        public void Success()
-        {
-
-        }
     }
 }

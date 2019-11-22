@@ -21,6 +21,7 @@ io.on('connection', function(socket){
     socket.emit('register', {id: thisPlayerID});
     socket.emit('spawn', player); //Tell myself I have spawned
     socket.broadcast.emit('spawn', player); //Tell others I have spawned
+    //socket.emit('loadData', player);
 
     //Tell myself about everyone else
     for(var playerID in players){
@@ -38,9 +39,23 @@ io.on('connection', function(socket){
         socket.broadcast.emit('updatePosition', player);
     });
 
+    //pull info from database, if none, make new
+    socket.on('loadData', function(data) {
+        console.log('woo'); 
+        for(var i = 0; i < 6; i ++)
+        {
+            player.playerStats.skills[i] = data.playerStats.skills[i];
+            
+        }
+
+        socket.broadcast.emit('loadData', player);
+    });
+
     socket.on('successfulMinigame', function(data)
     {
         //recieve minigame type, send back random winnings (exp)
+        console.log('woo'); 
+        
     });
 
     socket.on('disconnect', function(){

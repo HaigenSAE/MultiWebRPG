@@ -85,6 +85,25 @@ namespace Project.Networking
 				ni.transform.position = new Vector3(x, y, z);
 			});
 
+            On("loadData", (E) =>
+            {
+                string id = E.data["id"].ToString().RemoveQuotes();
+
+                GameObject go = serverObjects[id].gameObject;
+                PlayerStats ps = go.GetComponent<PlayerStats>();
+                for(int i = 0; i < 6; i++)
+                {
+                    ps.skills[i].skillName = E.data["playerStats"]["skills"[i]]["skillName"].ToString();
+                    ps.skills[i].curLevel = Mathf.RoundToInt(E.data["playerStats"]["skills"[i]]["curLevel"].f);
+                    ps.skills[i].curExp = Mathf.RoundToInt(E.data["playerStats"]["skills"[i]]["curExp"].f);
+                }
+            });
+
+            On("saveData", (E) =>
+            {
+                
+            });
+
             On("successfulMinigame", (E) =>
             {
                 string id = E.data["id"].ToString().RemoveQuotes();
@@ -98,7 +117,7 @@ namespace Project.Networking
 	{
 		public string id;
 		public Position position;
-        public PlayerStats statsClass;
+        public PlayerStats playerStats;
 	}
 
 	[Serializable]

@@ -8,7 +8,8 @@ namespace Project.Player
     public class MinigamePanel : MonoBehaviour
     {
         public Button backButton;
-        public GameObject owner;
+        public GameObject ownerPlayer;
+        public GameObject ownerInteractable;
         public GameObject[] miniGames;
         public GameObject curMinigame;
         public Text title;
@@ -19,19 +20,20 @@ namespace Project.Player
             backButton = GetComponentInChildren<Button>();
             backButton.onClick.AddListener(BackPressed);
             curMinigame = Instantiate(miniGames[Random.Range(0, miniGames.Length)], transform);
-            
+            curMinigame.GetComponent<MinigameMaster>().playerObj = ownerPlayer;
         }
 
         public void BackPressed()
         {
             //Exit minigame
-            owner.GetComponent<Interactable>().CloseInteractable();
+            ownerInteractable.GetComponent<Interactable>().CloseInteractable();
             Destroy(gameObject);
         }
 
         public void Success()
         {
             title.text = "Success!";
+            ownerPlayer.GetComponent<PlayerManager>().networkIdentity.GetSocket().Emit("successfulMinigame", new JSONObject(JsonUtility.ToJson(ownerPlayer.GetComponent<PlayerManager>().playerStats)));
         }
     }
 
