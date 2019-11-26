@@ -6,7 +6,7 @@ var Player = require('./Classes/Player.js');
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./clubrpg-69-firebase-adminsdk-a15p5-fcbc6997d7.json");
+var serviceAccount = require("./ServiceKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
