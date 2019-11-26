@@ -23,6 +23,8 @@ public class Skill : ScriptableObject
         curExp += incExp;
         if (curExp >= reqXP())
             LevelUp();
+
+        Debug.Log("Increased exp for: " + skillName + " by: " + incExp + " new total is: " + curExp);
     }
 
     public void LevelUp()

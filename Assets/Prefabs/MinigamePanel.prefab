@@ -165,12 +165,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backButton: {fileID: 0}
-  owner: {fileID: 0}
+  ownerPlayer: {fileID: 0}
+  ownerInteractable: {fileID: 0}
   miniGames:
   - {fileID: 80687742343697738, guid: f02067ceeb0deb14286b4dc58649bfad, type: 3}
   - {fileID: 8369564150150735521, guid: 1c62cc137f2586944aa047a650a39e98, type: 3}
   curMinigame: {fileID: 0}
   title: {fileID: 1153135197080748172}
+  minigameSkill: Cooking
 --- !u!1 &1153135197080748162
 GameObject:
   m_ObjectHideFlags: 0

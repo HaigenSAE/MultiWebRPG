@@ -107,7 +107,20 @@ namespace Project.Networking
             On("successfulMinigame", (E) =>
             {
                 string id = E.data["id"].ToString().RemoveQuotes();
-                //send success, receive winnings
+
+                GameObject go = serverObjects[id].gameObject;
+                PlayerStats ps = go.GetComponent<PlayerStats>();
+                Debug.Log(go.name);
+                Debug.Log(E.data["minigameWon"]);
+                foreach (Skill skill in ps.skills)
+                {
+                    if(skill.skillName == E.data["minigameWon"].str)
+                    {
+                        skill.IncreaseExp((int)E.data["expAward"].f);
+                    }
+                    
+                    Debug.Log(skill.skillName);
+                }
             });
 		}
     }
@@ -118,6 +131,7 @@ namespace Project.Networking
 		public string id;
 		public Position position;
         public PlayerStats playerStats;
+        public string minigameWon;
 	}
 
 	[Serializable]

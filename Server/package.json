@@ -9,8 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "firebase-admin": "^8.8.0",
     "nodemon": "^1.19.3",
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "firebase": "^7.5.0"
   }
 }

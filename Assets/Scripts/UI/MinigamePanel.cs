@@ -13,6 +13,7 @@ namespace Project.Player
         public GameObject[] miniGames;
         public GameObject curMinigame;
         public Text title;
+        public string minigameSkill;
 
         // Start is called before the first frame update
         void Start()
@@ -33,7 +34,7 @@ namespace Project.Player
         public void Success()
         {
             title.text = "Success!";
-            ownerPlayer.GetComponent<PlayerManager>().networkIdentity.GetSocket().Emit("successfulMinigame", new JSONObject(JsonUtility.ToJson(ownerPlayer.GetComponent<PlayerManager>().playerStats)));
+            ownerPlayer.GetComponent<PlayerManager>().MinigameCompleted(minigameSkill);
         }
     }
 

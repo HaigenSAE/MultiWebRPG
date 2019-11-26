@@ -10,5 +10,7 @@ module.exports = class Player {
         this.position = new Vector3();
         this.position2D = new Vector2();
         this.playerStats = new PlayerStats();
+        this.expAward = 0;
+        this.minigameWon = '';
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     public List<Skill> skills;
-    public string skillString;
+    //public string skillString;
 
     void Awake()
     {
@@ -19,19 +19,9 @@ public class PlayerStats : MonoBehaviour
         skills[2].skillName = "Fishing";
         skills[3].skillName = "Smithing";
         skills[4].skillName = "Woodcutting";
-        skills[5].skillName = "FireMaking";
+        skills[5].skillName = "Firemaking";
 
         //Load skills data
-    }
-
-    public void LoadSkills()
-    {
-        skills = StringToObjectList(skillString);
-    }
-
-    public void SaveSkills()
-    {
-        skillString = ObjectListToString(skills);
     }
 
     public static string ObjectListToString(List<Skill> listOfObjects)

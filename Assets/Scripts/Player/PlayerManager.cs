@@ -36,9 +36,9 @@ namespace Project.Player
 			}
         }
         
-        public void MinigameCompleted()
+        public void MinigameCompleted(string skillName)
         {
-            
+            GetComponent<NetworkMinigameController>().successfulMinigame(skillName);
         }
 
         private void CheckMovement()
