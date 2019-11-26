@@ -20,7 +20,7 @@ var sockets = [];
 var ExpHigh = 300;
 var ExpLow = 100;
 
-var db = admin.database();
+var db = admin.firestore();
 var usersRef = db.collection('users');
 
 io.on('connection', function(socket){
@@ -43,9 +43,9 @@ io.on('connection', function(socket){
         if(playerID != thisPlayerID){
             socket.emit('spawn', players[playerID]);
         }
-        usersRef.doc(playersID.toString()).set({
+        usersRef.doc(playerID.toString()).set({
             username: players[playerID].username.toString(),
-            playerStats: players[playerID].playerStats
+            playerStats: JSON.parse(JSON.stringify(players[playerID].playerStats))
         });
         console.log('saved to db');
     }
@@ -89,7 +89,7 @@ io.on('connection', function(socket){
     socket.on('successfulMinigame', function(data)
     {
         //recieve minigame type, send back random winnings (exp)
-        console.log('woo'); 
+        console.log('woohoo'); 
         player.minigameWon = data.minigameWon;
         player.expAward = Math.random() * (ExpHigh - ExpLow) + ExpLow;
         socket.broadcast.emit('successfulMinigame', player);

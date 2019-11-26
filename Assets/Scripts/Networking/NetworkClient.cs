@@ -106,6 +106,7 @@ namespace Project.Networking
 
             On("successfulMinigame", (E) =>
             {
+                Debug.Log("Success Called From Server");
                 string id = E.data["id"].ToString().RemoveQuotes();
 
                 GameObject go = serverObjects[id].gameObject;
@@ -121,6 +122,8 @@ namespace Project.Networking
                     
                     Debug.Log(skill.skillName);
                 }
+                NetworkIdentity ni = go.GetComponent<NetworkIdentity>();
+                ni.GetSocket().Emit("saveData", new JSONObject());
             });
 		}
     }

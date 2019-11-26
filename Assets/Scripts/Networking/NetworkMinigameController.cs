@@ -20,6 +20,7 @@ namespace Project.Networking
             Player player = new Player();
             player.minigameWon = minigameName;
             ni.GetSocket().Emit("successfulMinigame", new JSONObject(JsonUtility.ToJson(player)));
+            Debug.Log("Emit sent");
         }
     }
 }

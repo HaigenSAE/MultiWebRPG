@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "firebase-admin": "^8.8.0",
-    "nodemon": "^1.19.3",
+    "nodemon": "^1.19.4",
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0"
   },

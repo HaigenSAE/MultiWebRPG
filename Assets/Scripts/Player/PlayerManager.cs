@@ -38,7 +38,8 @@ namespace Project.Player
         
         public void MinigameCompleted(string skillName)
         {
-            GetComponent<NetworkMinigameController>().successfulMinigame(skillName);
+            Debug.Log("talking to networkcontroller");
+            GetComponent<NetworkMinigameController>().successfulMinigame(skillName); 
         }
 
         private void CheckMovement()
