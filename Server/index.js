@@ -21,8 +21,7 @@ var ExpHigh = 300;
 var ExpLow = 100;
 
 var db = admin.database();
-var ref = db.ref("database/firestore/data");
-var usersRef = ref.child("users");
+var usersRef = db.collection('users');
 
 io.on('connection', function(socket){
     console.log('Connection Made');
@@ -39,11 +38,16 @@ io.on('connection', function(socket){
     socket.broadcast.emit('spawn', player); //Tell others I have spawned
     socket.emit('loadData', player);
 
-    //Tell myself about everyone else
+    //Load players and playerinfo
     for(var playerID in players){
         if(playerID != thisPlayerID){
             socket.emit('spawn', players[playerID]);
         }
+        usersRef.doc(playersID.toString()).set({
+            username: players[playerID].username.toString(),
+            playerStats: players[playerID].playerStats
+        });
+        console.log('saved to db');
     }
 
     //Positional Data from Client
@@ -63,15 +67,6 @@ io.on('connection', function(socket){
             player.playerStats.skills[i] = data.playerStats.skills[i];
             
         }
-        
-        for(var i = 0; i < players.length; i++)
-        {
-            usersRef.child(players[i].id.toString()).set({
-                username: player.username.toString(),
-                playerStats: player.playerStats
-            });
-        }   
-
         socket.broadcast.emit('loadData', player);
     });
 
