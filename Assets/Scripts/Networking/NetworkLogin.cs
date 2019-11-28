@@ -15,6 +15,8 @@ namespace Project.Networking
 
         public NetworkIdentity ni;
 
+        public Text userExists;
+
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -36,11 +38,20 @@ namespace Project.Networking
         {
             LoginData lData = new LoginData();
             lData.regoID = text.text.ToString();
-            Debug.Log("Creating new user with: " + lData.loginID);
-            SceneManager.LoadScene("Kitchen");
             ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
+            Debug.Log("Creating new user with: " + lData.regoID);
+        }
+
+        public void successfulRegistration()
+        {
+            SceneManager.LoadScene("Kitchen");
             Destroy(ni);
             Destroy(this);
+        }
+
+        public void alreadyExists()
+        {
+            userExists.gameObject.SetActive(true);
         }
     }
 

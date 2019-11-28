@@ -15,6 +15,8 @@ namespace Project.Networking
         [SerializeField]
         private GameObject playerPrefab;//
 
+        public NetworkLogin networkLogin;
+
         public static string ClientID { get; private set; }
 
         private Dictionary<string, NetworkIdentity> serverObjects;
@@ -49,6 +51,7 @@ namespace Project.Networking
             {
                 ClientID = E.data["id"].ToString().RemoveQuotes();
                 Debug.LogFormat("Our Client's ID ({0})", ClientID);
+                networkLogin.successfulRegistration();
                 Emit("enterGame");
                 
             });
@@ -127,11 +130,19 @@ namespace Project.Networking
                 }
                 go.GetComponent<Project.Player.PlayerManager>().SaveData();
             });
+
+            On("alreadyExists", (E) =>
+            {
+                AlreadyExists();
+            });
         }
 
-        public void SaveData()
+        public void AlreadyExists()
         {
-
+            if(networkLogin)
+            {
+                networkLogin.alreadyExists();
+            }
         }
     }
 
