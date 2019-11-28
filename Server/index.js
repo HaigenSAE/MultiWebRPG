@@ -32,40 +32,75 @@ io.on('connection', function(socket){
 
     //login using existing id
     socket.on('loginClient', function(data){
-        console.log('trying to load ', + data, ' from db'); 
-        var tryLoginID = data.loginID;
+        var tryLoginID = data.loginID.toString();
         usersRef.doc(tryLoginID.toString()).get().then(doc => {
             if(!doc.exists)
             {
-                console.log('no such player exists');
+                console.log('no such player exists, spawning new');
+                socket.emit('registered', {id: thisPlayerID})
             }
-            var myData = doc.data();
-            //setup new player
-            player = new Player();
-            player.id = tryLoginID;
-            players[tryLoginID] = player;
-            sockets[tryLoginID] = socket;
-            thisPlayerID = tryLoginID;
-            //assign data
-            player = myData;
-            console.log('loaded player: ', player.id);
+            else
+            {
+                console.log('attempting to load: ', tryLoginID);
+                var myData = doc.data();
+                delete players[thisPlayerID];
+                delete sockets[thisPlayerID];
+                //setup new player
+                players[tryLoginID] = player;
+                sockets[tryLoginID] = socket;
+                thisPlayerID = tryLoginID;
+                //assign data
+                player = myData;
+                player.id = tryLoginID;
+                console.log('loaded player: ', player);
+                socket.emit('loggedIn', {id: thisPlayerID});
+            }  
         })
         .catch(err => {
             console.log('error getting doc', err);
         });
         
-        socket.emit('register', {id: thisPlayerID})
+        
     });
 
     //register new user
     socket.on('registerClient', function(data){
-        
+        var regoID = data.regoID.toString();
+        console.log('regoID = ', regoID);
+        if(regoID != '')
+        {
+            delete players[thisPlayerID];
+            delete sockets[thisPlayerID];
+            //setup new player
+            players[regoID] = player;
+            sockets[regoID] = socket;
+            //assign data
+            player.id = regoID;
+            thisPlayerID = regoID;
+            usersRef.doc(regoID.toString()).set({
+                username: player.username.toString(),
+                playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                position: JSON.parse(JSON.stringify(player.position))
+            });          
+        }
+        else
+        {
+            usersRef.doc(player.id.toString()).set({
+                username: player.username.toString(),
+                playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                position: JSON.parse(JSON.stringify(player.position))
+            });
+        }
+        console.log('Created player: ', player);         
+        socket.emit('registered', {id: thisPlayerID});
     });
 
     //bring them in
     socket.on('enterGame', function(data){
+        console.log('entering game');
         //Tell the client that this is our id for the server
         socket.emit('register', {id: thisPlayerID});
+        console.log(player);
         socket.emit('spawn', player); //Tell myself I have spawned
         socket.broadcast.emit('spawn', player); //Tell others I have spawned
     });
@@ -109,7 +144,8 @@ io.on('connection', function(socket){
 
     //save info to database
     socket.on('saveData', function(data) {
-        console.log('save to db'); 
+        console.log('save to db');
+        console.log(data); 
         for(var i = 0; i < 6; i ++)
         {
             player.playerStats.skills[i] = data.playerStats.skills[i];
@@ -120,17 +156,17 @@ io.on('connection', function(socket){
                 playerStats: JSON.parse(JSON.stringify(player.playerStats)),
                 position: JSON.parse(JSON.stringify(player.position))
         });
-        socket.broadcast.emit('saveData', player);
+        socket.emit('saveData', player);
     });
 
 
-    socket.on('successfulMinigame', function(data)
-    {
+    socket.on('successfulMinigame', function(data){
         //recieve minigame type, send back random winnings (exp)
         console.log('successful Minigame'); 
         player.minigameWon = data.minigameWon;
         player.expAward = Math.random() * (ExpHigh - ExpLow) + ExpLow;
-        socket.broadcast.emit('successMinigame', player);
+        console.log(player.expAward, ' exp for ', player.minigameWon);
+        socket.emit('successMinigame', player);
         console.log('broadcast sent to client');
         player.expAward = 0;
     });

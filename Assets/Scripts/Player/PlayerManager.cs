@@ -40,7 +40,7 @@ namespace Project.Player
         public void MinigameCompleted(string skillName)
         {
             Debug.Log("talking to networkcontroller");
-            GetComponent<NetworkMinigameController>().successfulMinigame(skillName); 
+            GetComponent<NetworkMinigameController>().successfulMinigame(skillName, networkIdentity); 
         }
 
         public void SaveData()

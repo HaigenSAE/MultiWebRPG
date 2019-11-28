@@ -40,14 +40,24 @@ namespace Project.Networking
 
         private void SetupEvents()
         {
-            On("open", (E) => {
+            On("open", (E) => 
+            {
                 Debug.Log("Connection made to server");
             });
 
-            On("register", (E) =>
+            On("registered", (E) =>
             {
                 ClientID = E.data["id"].ToString().RemoveQuotes();
                 Debug.LogFormat("Our Client's ID ({0})", ClientID);
+                Emit("enterGame");
+                
+            });
+
+            On("loggedIn", (E) =>
+            {
+                ClientID = E.data["id"].ToString().RemoveQuotes();
+                Debug.LogFormat("Our Client's ID ({0})", ClientID);
+                Emit("enterGame");
             });
 
             On("spawn", (E) =>
@@ -101,9 +111,8 @@ namespace Project.Networking
 
             On("successMinigame", (E) =>
             {
-                string id = E.data["id"].ToString().RemoveQuotes();
                 Debug.Log("Success Called From Server");
-
+                string id = E.data["id"].ToString().RemoveQuotes();
                 GameObject go = serverObjects[id].gameObject;
                 PlayerStats ps = go.GetComponent<PlayerStats>();
                 Debug.Log(go.name);
@@ -115,11 +124,8 @@ namespace Project.Networking
                         skill.IncreaseExp((int)E.data["expAward"].f);
                         Debug.Log("Awarded exp to: " + skill.skillName);
                     }
-
-                    Debug.Log(skill.skillName);
                 }
-                NetworkIdentity ni = go.GetComponent<NetworkIdentity>();
-                ni.GetSocket().Emit("saveData", new JSONObject());
+                go.GetComponent<Project.Player.PlayerManager>().SaveData();
             });
         }
 
