@@ -10,7 +10,6 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://clubrpg-69.firebaseio.com"
 });
-
 console.log('Server Started');
 
 var players = [];
@@ -32,6 +31,7 @@ io.on('connection', function(socket){
 
     //login using existing id
     socket.on('loginClient', function(data){
+        
         var tryLoginID = data.loginID.toString();
         usersRef.doc(tryLoginID.toString()).get().then(doc => {
             if(!doc.exists)
@@ -41,6 +41,12 @@ io.on('connection', function(socket){
             }
             else
             {
+                firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // ...
+                  });
                 console.log('attempting to load: ', tryLoginID);
                 var myData = doc.data();
                 delete players[thisPlayerID];
@@ -67,10 +73,10 @@ io.on('connection', function(socket){
     socket.on('registerClient', function(data){
         var regoID = data.regoID.toString();
         usersRef.doc(regoID.toString()).get().then(doc => {
-            if(!doc.exists){
+            if(!doc.exists){   
                 console.log('regoID = ', regoID);
                 if(regoID != '')
-                {
+                { 
                     delete players[thisPlayerID];
                     delete sockets[thisPlayerID];
                     //setup new player
@@ -93,6 +99,12 @@ io.on('connection', function(socket){
                         position: JSON.parse(JSON.stringify(player.position))
                     });
                 }
+                firebase.auth().createUserWithEmailAndPassword(data.regoID, data.password).catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // ...
+                  });
                 console.log('Created player: ', player);         
                 socket.emit('registered', {id: thisPlayerID});
             }

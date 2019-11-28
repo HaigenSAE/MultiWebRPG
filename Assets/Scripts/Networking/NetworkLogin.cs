@@ -16,6 +16,12 @@ namespace Project.Networking
         public NetworkIdentity ni;
 
         public Text userExists;
+        public Button loginButton;
+        public Button regoButton;
+        public Text loginUserText;
+        public Text loginPassText;
+        public Text regoUserText;
+        public Text regoPassText;
 
         private void Awake()
         {
@@ -23,10 +29,17 @@ namespace Project.Networking
             ni.SetSocketReference(GetComponent<NetworkClient>());
         }
 
-        public void tryLogin(Text text)
+        private void Start()
+        {
+            loginButton.onClick.AddListener(() => tryLogin(loginUserText, loginPassText));
+            regoButton.onClick.AddListener(() => tryLogin(regoUserText, regoPassText));
+        }
+
+        public void tryLogin(Text userText, Text passText)
         {
             LoginData lData = new LoginData();
-            lData.loginID = text.text.ToString();
+            lData.loginID = userText.text.ToString();
+            lData.password = passText.text.ToString();
             Debug.Log("Trying to login with: " + lData.loginID);
             SceneManager.LoadScene("Kitchen");
             ni.GetSocket().Emit("loginClient", new JSONObject(JsonUtility.ToJson(lData)));
@@ -34,10 +47,11 @@ namespace Project.Networking
             Destroy(this);
         }
 
-        public void register(Text text)
+        public void register(Text userText, Text passText)
         {
             LoginData lData = new LoginData();
-            lData.regoID = text.text.ToString();
+            lData.regoID = userText.text.ToString();
+            lData.password = passText.text.ToString();
             ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
             Debug.Log("Creating new user with: " + lData.regoID);
         }
@@ -59,6 +73,7 @@ namespace Project.Networking
     {
         public string loginID;
         public string regoID;
+        public string password;
     }
 }
 
