@@ -22,6 +22,7 @@ namespace Project.Player
 
         public void CloseInteractable()
         {
+            playerTrack.GetComponent<PlayerManager>().SaveData();
             playerTrack.GetComponent<PlayerManager>().isInInteraction = false;
         }
     }

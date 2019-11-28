@@ -25,6 +25,7 @@ namespace Project.Player
         {
             destination = transform.position;
             playerStats = GetComponent<PlayerStats>();
+            networkIdentity = GetComponent<NetworkIdentity>();
         }
 
         // Update is called once per frame
@@ -40,6 +41,31 @@ namespace Project.Player
         {
             Debug.Log("talking to networkcontroller");
             GetComponent<NetworkMinigameController>().successfulMinigame(skillName); 
+        }
+
+        public void SaveData()
+        {
+            Project.Networking.Player player = new Project.Networking.Player();
+            if(player != null)
+            {
+                player.playerStats = new Project.Networking.PStats();
+                player.playerStats.skills = new List<Project.Networking.SkillStats>();
+                for(int i = 0; i < 6; i++)
+                {
+                    player.playerStats.skills.Add(new SkillStats());
+                    player.playerStats.skills[i].skillName = playerStats.skills[i].skillName;
+                    player.playerStats.skills[i].curExp = playerStats.skills[i].curExp;
+                    player.playerStats.skills[i].curLevel = playerStats.skills[i].curLevel;
+                }
+                player.id = networkIdentity.GetID();
+               
+                networkIdentity.GetSocket().Emit("saveData", new JSONObject(JsonUtility.ToJson(player)));
+            }
+            else
+            {
+                Debug.Log("playernull?");
+            }
+            
         }
 
         private void CheckMovement()
