@@ -16,6 +16,7 @@ namespace Project.Networking
         public NetworkIdentity ni;
 
         public Text userExists;
+        public Text userLogged;
         public Button loginButton;
         public Button regoButton;
         public Text loginUserText;
@@ -32,31 +33,50 @@ namespace Project.Networking
         private void Start()
         {
             loginButton.onClick.AddListener(() => tryLogin(loginUserText, loginPassText));
-            regoButton.onClick.AddListener(() => tryLogin(regoUserText, regoPassText));
+            regoButton.onClick.AddListener(() => register(regoUserText, regoPassText));
         }
 
         public void tryLogin(Text userText, Text passText)
         {
-            LoginData lData = new LoginData();
-            lData.loginID = userText.text.ToString();
-            lData.password = passText.text.ToString();
-            Debug.Log("Trying to login with: " + lData.loginID);
-            SceneManager.LoadScene("Kitchen");
-            ni.GetSocket().Emit("loginClient", new JSONObject(JsonUtility.ToJson(lData)));
-            Destroy(ni);
-            Destroy(this);
+            if (passText.text.Length >= 6)
+            {
+                LoginData lData = new LoginData();
+                lData.loginID = userText.text.ToString();
+                lData.password = passText.text.ToString();
+                loginButton.gameObject.SetActive(false);
+                regoButton.gameObject.SetActive(false);
+                Debug.Log("Trying to login with: " + lData.loginID);
+                ni.GetSocket().Emit("loginClient", new JSONObject(JsonUtility.ToJson(lData)));
+            }
+            else
+            {
+                userExists.text = "Password must be at least 6 characters";
+                userExists.gameObject.SetActive(true);
+            }
+               
         }
 
         public void register(Text userText, Text passText)
         {
-            LoginData lData = new LoginData();
-            lData.regoID = userText.text.ToString();
-            lData.password = passText.text.ToString();
-            ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
-            Debug.Log("Creating new user with: " + lData.regoID);
+            if (passText.text.Length >= 6)
+            {
+                LoginData lData = new LoginData();
+                lData.regoID = userText.text.ToString();
+                lData.password = passText.text.ToString();
+                loginButton.gameObject.SetActive(false);
+                regoButton.gameObject.SetActive(false);
+                ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
+                Debug.Log("Creating new user with: " + lData.regoID);
+                
+            }
+            else
+            {
+                userExists.text = "Password must be at least 6 characters";
+                userExists.gameObject.SetActive(true);
+            }
         }
 
-        public void successfulRegistration()
+        public void successfulPass()
         {
             SceneManager.LoadScene("Kitchen");
             Destroy(ni);
@@ -65,7 +85,34 @@ namespace Project.Networking
 
         public void alreadyExists()
         {
+            userExists.text = "User already exists";
             userExists.gameObject.SetActive(true);
+            loginButton.gameObject.SetActive(true);
+            regoButton.gameObject.SetActive(true);
+        }
+
+        public void alreadyLoggedIn()
+        {
+            userLogged.text = "User already logged in";
+            userLogged.gameObject.SetActive(true);
+            loginButton.gameObject.SetActive(true);
+            regoButton.gameObject.SetActive(true);
+        }
+
+        public void userNotFound()
+        {
+            userLogged.text = "User not found";
+            userLogged.gameObject.SetActive(true);
+            loginButton.gameObject.SetActive(true);
+            regoButton.gameObject.SetActive(true);
+        }
+
+        public void incorrectPassword()
+        {
+            userLogged.text = "Password Incorrect";
+            userLogged.gameObject.SetActive(true);
+            loginButton.gameObject.SetActive(true);
+            regoButton.gameObject.SetActive(true);
         }
     }
 

@@ -1,7 +1,13 @@
 var io = require('socket.io')(process.env.PORT || 52300);
-
 //Custom Classes
 var Player = require('./Classes/Player.js');
+
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
+var firebase = require("firebase/app");
+// Add the Firebase products that you want to use
+require("firebase/auth");
+require("firebase/firestore");
 
 var admin = require("firebase-admin");
 var serviceAccount = require("./ServiceKey.json");
@@ -10,6 +16,21 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://clubrpg-69.firebaseio.com"
 });
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBmgbR7A-cR7IP99gCCSni69VMEVeZ2dP4",
+    authDomain: "clubrpg-69.firebaseapp.com",
+    databaseURL: "https://clubrpg-69.firebaseio.com",
+    projectId: "clubrpg-69",
+    storageBucket: "clubrpg-69.appspot.com",
+    messagingSenderId: "126051118526",
+    appId: "1:126051118526:web:d6f7a70764cdb147c6ddef",
+    measurementId: "G-F4R9SG7NST"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
 console.log('Server Started');
 
 var players = [];
@@ -30,91 +51,126 @@ io.on('connection', function(socket){
     sockets[thisPlayerID] = socket;
 
     //login using existing id
-    socket.on('loginClient', function(data){
-        
-        var tryLoginID = data.loginID.toString();
-        usersRef.doc(tryLoginID.toString()).get().then(doc => {
-            if(!doc.exists)
+    socket.on('loginClient', function(data){     
+        if(data.loginID != '')
+        {
+            console.log(data.loginID);
+            firebase.auth().signInWithEmailAndPassword(data.loginID, data.password).then(function(logUser) 
             {
-                console.log('no such player exists, spawning new');
-                socket.emit('registered', {id: thisPlayerID})
-            }
-            else
-            {
-                firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    // ...
-                  });
-                console.log('attempting to load: ', tryLoginID);
-                var myData = doc.data();
-                delete players[thisPlayerID];
-                delete sockets[thisPlayerID];
-                //setup new player
-                players[tryLoginID] = player;
-                sockets[tryLoginID] = socket;
-                thisPlayerID = tryLoginID;
-                //assign data
-                player = myData;
-                player.id = tryLoginID;
-                console.log('loaded player: ', player);
-                socket.emit('loggedIn', {id: thisPlayerID});
-            }  
-        })
-        .catch(err => {
-            console.log('error getting doc', err);
-        });
-        
-        
+                var authUID = logUser.user.uid;
+                console.log(authUID);
+                usersRef.doc(authUID.toString()).get().then(doc => 
+                {
+                    if(!doc.exists)
+                    {
+                        console.log('no such player exists');
+                        socket.emit('registered', {id: thisPlayerID});
+                    }
+                    else if(players[authUID] != null)
+                    {
+                        console.log('player already in game');
+                        socket.emit('alreadyLoggedIn');
+                    }
+                    else
+                    {
+                        console.log('attempting to load: ', authUID);
+                        var myData = doc.data();
+                        delete players[thisPlayerID];
+                        delete sockets[thisPlayerID];
+                        //setup new player
+                        players[authUID] = player;
+                        sockets[authUID] = socket;
+                        thisPlayerID = authUID;
+                        //assign data
+                        player = myData;
+                        player.id = authUID;
+                        console.log('loaded player: ', player);
+                        socket.emit('loggedIn', {id: thisPlayerID});
+                    }  
+                });
+            }).catch(function(error) {
+                var errorCode = error.code;
+                switch(error.code)
+                {
+                    case 'auth/user-not-found':
+                        socket.emit('userNotFound');
+                    break;
+                    case 'auth/wrong-password':
+                        socket.emit('incorrectPassword');
+                    break;
+                    case 'auth/email-already-in-use':
+                    socket.emit('alreadyExists');
+                    console.log('alreadyExists');
+                }
+                console.log(error.code);
+            });           
+        }
     });
 
     //register new user
     socket.on('registerClient', function(data){
         var regoID = data.regoID.toString();
-        usersRef.doc(regoID.toString()).get().then(doc => {
-            if(!doc.exists){   
-                console.log('regoID = ', regoID);
-                if(regoID != '')
-                { 
-                    delete players[thisPlayerID];
-                    delete sockets[thisPlayerID];
-                    //setup new player
-                    players[regoID] = player;
-                    sockets[regoID] = socket;
-                    //assign data
-                    player.id = regoID;
-                    thisPlayerID = regoID;
-                    usersRef.doc(regoID.toString()).set({
-                        username: player.username.toString(),
-                        playerStats: JSON.parse(JSON.stringify(player.playerStats)),
-                        position: JSON.parse(JSON.stringify(player.position))
-                    });          
-                }
-                else
-                {
-                    usersRef.doc(player.id.toString()).set({
-                        username: player.username.toString(),
-                        playerStats: JSON.parse(JSON.stringify(player.playerStats)),
-                        position: JSON.parse(JSON.stringify(player.position))
-                    });
-                }
-                firebase.auth().createUserWithEmailAndPassword(data.regoID, data.password).catch(function(error) {
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    // ...
-                  });
-                console.log('Created player: ', player);         
-                socket.emit('registered', {id: thisPlayerID});
-            }
-            else
+        if(regoID != '')
+        {
+            firebase.auth().createUserWithEmailAndPassword(data.regoID, data.password).then(function(regUser) 
             {
-                console.log(regoID , 'already exists');
-                socket.emit('alreadyExists');
-            }
-        });
-        
+                console.log(regUser.user.uid);
+                var authUID = regUser.user.uid;
+                usersRef.doc(authUID.toString()).get().then(doc => {
+                    if(!doc.exists)
+                    {   
+                        console.log('regoID = ', authUID);
+                        if(authUID != '')
+                        { 
+                            delete players[thisPlayerID];
+                            delete sockets[thisPlayerID];
+                            //setup new player
+                                players[authUID] = player;
+                                sockets[authUID] = socket;
+                                //assign data
+                                player.id = authUID;
+                                thisPlayerID = authUID;
+                                usersRef.doc(authUID.toString()).set({
+                                    username: player.username.toString(),
+                                    playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                                    position: JSON.parse(JSON.stringify(player.position))
+                                });          
+                            }
+                            else
+                            {
+                                usersRef.doc(player.id.toString()).set({
+                                    username: player.username.toString(),
+                                    playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                                    position: JSON.parse(JSON.stringify(player.position))
+                                });
+                            }
+                            console.log('Created player: ', player);         
+                            socket.emit('registered', {id: thisPlayerID});
+                            }
+                            else
+                            {
+                                console.log(regoID , 'already exists');
+                                socket.emit('alreadyExists');
+                            }
+                    })
+                }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                switch(error.code)
+                {
+                    case 'auth/user-not-found':
+                        socket.emit('userNotFound');
+                    break;
+                    case 'auth/wrong-password':
+                        socket.emit('incorrectPassword');
+                    break;
+                    case 'auth/email-already-in-use':
+                    socket.emit('alreadyExists');
+                    console.log('alreadyExists');
+                }
+                console.log(error);
+            });     
+        }             
     });
 
     //bring them in
@@ -194,6 +250,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('disconnect', function(){
+        firebase.auth().signOut();
         console.log('Player disconnected');
         delete players[thisPlayerID];
         delete sockets[thisPlayerID];

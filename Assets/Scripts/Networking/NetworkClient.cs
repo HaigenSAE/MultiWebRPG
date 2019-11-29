@@ -51,7 +51,7 @@ namespace Project.Networking
             {
                 ClientID = E.data["id"].ToString().RemoveQuotes();
                 Debug.LogFormat("Our Client's ID ({0})", ClientID);
-                networkLogin.successfulRegistration();
+                networkLogin.successfulPass();
                 Emit("enterGame");
                 
             });
@@ -60,6 +60,7 @@ namespace Project.Networking
             {
                 ClientID = E.data["id"].ToString().RemoveQuotes();
                 Debug.LogFormat("Our Client's ID ({0})", ClientID);
+                networkLogin.successfulPass();
                 Emit("enterGame");
             });
 
@@ -134,6 +135,25 @@ namespace Project.Networking
             On("alreadyExists", (E) =>
             {
                 AlreadyExists();
+                Debug.Log("already exists");
+            });
+
+            On("alreadyLoggedIn", (E) =>
+            {
+                AlreadyLoggedIn();
+                Debug.Log("AlreadyLoggedIn");
+            });
+
+            On("userNotFound", (E) =>
+            {
+                UserNotFound();
+                Debug.Log("UserNotFound");
+            });
+
+            On("incorrectPassword", (E) =>
+            {
+                PasswordIncorrect();
+                Debug.Log("PasswordIncorrect");
             });
         }
 
@@ -143,6 +163,26 @@ namespace Project.Networking
             {
                 networkLogin.alreadyExists();
             }
+        }
+
+        public void AlreadyLoggedIn()
+        {
+            if (networkLogin)
+            {
+                networkLogin.alreadyLoggedIn();
+            }
+        }
+
+        public void UserNotFound()
+        {
+            if (networkLogin)
+                networkLogin.userNotFound();            
+        }
+
+        public void PasswordIncorrect()
+        {
+            if (networkLogin)
+                networkLogin.incorrectPassword();
         }
     }
 
