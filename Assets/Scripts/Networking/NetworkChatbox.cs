@@ -8,7 +8,7 @@ namespace Project.Networking
     public class NetworkChatbox : MonoBehaviour
     {
         public int maxMessages = 25;
-        public GameObject chatPanel, textObject;
+        public GameObject chatPanel, textObject, inputField;
 
         NetworkClient nc;
         GameObject player;
@@ -27,6 +27,7 @@ namespace Project.Networking
         void Update()
         {
             player = nc.localPlayerObj;
+            player.GetComponent<Project.Player.PlayerManager>().isChatFocused = inputField.GetComponent<InputField>().isFocused;
         }
 
         public void ReceiveMessage(string message)
@@ -64,9 +65,7 @@ namespace Project.Networking
                 }
 
                 GameObject newTextObject = Instantiate(textObject, chatPanel.transform);
-
                 curMessage.textObject = newTextObject.GetComponent<Text>();
-
                 curMessage.textObject.text = curMessage.text;
 
                 //emit message

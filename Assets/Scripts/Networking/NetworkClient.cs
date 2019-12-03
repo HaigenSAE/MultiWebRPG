@@ -13,7 +13,7 @@ namespace Project.Networking
         [SerializeField]
         private Transform networkContainer;
         [SerializeField]
-        private GameObject playerPrefab;//
+        private GameObject playerPrefab;
 
         public NetworkLogin networkLogin;
         public NetworkChatbox networkChatbox;
@@ -81,6 +81,7 @@ namespace Project.Networking
                 Transform initSpawn = spawns[UnityEngine.Random.Range(0, spawns.Length)].transform;
                 GameObject go = Instantiate(playerPrefab, initSpawn.position, initSpawn.rotation, networkContainer);
                 go.name = string.Format("Player ({0})", id);
+                go.GetComponent<Project.Player.PlayerManager>().username = E.data["username"].ToString().RemoveQuotes();
                 NetworkIdentity ni = go.GetComponent<NetworkIdentity>();
                 ni.SetControllerID(id);
                 ni.SetSocketReference(this);
@@ -112,6 +113,7 @@ namespace Project.Networking
                 string id = E.data["id"].ToString().RemoveQuotes();
 
                 GameObject go = serverObjects[id].gameObject;
+                go.GetComponent<Project.Player.PlayerManager>().username = E.data["username"].ToString().RemoveQuotes();
                 PlayerStats ps = go.GetComponent<PlayerStats>();
                 for (int i = 0; i < 6; i++)
                 {

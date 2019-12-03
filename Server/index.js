@@ -125,33 +125,35 @@ io.on('connection', function(socket){
                             delete players[thisPlayerID];
                             delete sockets[thisPlayerID];
                             //setup new player
-                                players[authUID] = player;
-                                sockets[authUID] = socket;
-                                //assign data
-                                player.id = authUID;
-                                thisPlayerID = authUID;
-                                usersRef.doc(authUID.toString()).set({
-                                    username: player.username.toString(),
-                                    playerStats: JSON.parse(JSON.stringify(player.playerStats)),
-                                    position: JSON.parse(JSON.stringify(player.position))
-                                });          
-                            }
-                            else
-                            {
-                                usersRef.doc(player.id.toString()).set({
-                                    username: player.username.toString(),
-                                    playerStats: JSON.parse(JSON.stringify(player.playerStats)),
-                                    position: JSON.parse(JSON.stringify(player.position))
-                                });
-                            }
-                            console.log('Created player: ', player);         
-                            socket.emit('registered', {id: thisPlayerID});
-                            }
-                            else
-                            {
-                                console.log(regoID , 'already exists');
-                                socket.emit('alreadyExists');
-                            }
+                            players[authUID] = player;
+                            sockets[authUID] = socket;
+                            //assign data
+                            player.id = authUID;
+                            player.username = data.username;
+                            thisPlayerID = authUID;
+                            usersRef.doc(authUID.toString()).set({
+                                username: player.username,
+                                playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                                position: JSON.parse(JSON.stringify(player.position))
+                            });          
+                        }
+                        else
+                        {
+                            player.username = data.username;
+                            usersRef.doc(player.id.toString()).set({
+                                username: player.username,
+                                playerStats: JSON.parse(JSON.stringify(player.playerStats)),
+                                position: JSON.parse(JSON.stringify(player.position))
+                            });
+                        }
+                        console.log('Created player: ', player);         
+                        socket.emit('registered', {id: thisPlayerID});
+                    }
+                    else
+                    {
+                        console.log(regoID , 'already exists');
+                        socket.emit('alreadyExists');
+                    }
                     })
                 }).catch(function(error) {
                 // Handle Errors here.

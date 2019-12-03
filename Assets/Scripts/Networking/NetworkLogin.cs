@@ -23,6 +23,7 @@ namespace Project.Networking
         public Text loginPassText;
         public Text regoUserText;
         public Text regoPassText;
+        public Text regoUsernameText;
 
         private void Awake()
         {
@@ -33,7 +34,7 @@ namespace Project.Networking
         private void Start()
         {
             loginButton.onClick.AddListener(() => tryLogin(loginUserText, loginPassText));
-            regoButton.onClick.AddListener(() => register(regoUserText, regoPassText));
+            regoButton.onClick.AddListener(() => register(regoUserText, regoPassText, regoUsernameText));
         }
 
         public void tryLogin(Text userText, Text passText)
@@ -56,13 +57,14 @@ namespace Project.Networking
                
         }
 
-        public void register(Text userText, Text passText)
+        public void register(Text userText, Text passText, Text usernameText)
         {
             if (passText.text.Length >= 6)
             {
                 LoginData lData = new LoginData();
                 lData.regoID = userText.text.ToString();
                 lData.password = passText.text.ToString();
+                lData.username = usernameText.text.ToString();
                 loginButton.gameObject.SetActive(false);
                 regoButton.gameObject.SetActive(false);
                 ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
@@ -120,6 +122,7 @@ namespace Project.Networking
     {
         public string loginID;
         public string regoID;
+        public string username;
         public string password;
     }
 }

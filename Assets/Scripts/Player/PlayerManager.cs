@@ -12,6 +12,7 @@ namespace Project.Player
 		[SerializeField]
 		private float speed = 4;
         public bool mouseInput;
+        public bool isChatFocused;
         public bool isInInteraction;
         private bool doMove;
         public Vector3 destination;
@@ -27,7 +28,6 @@ namespace Project.Player
             destination = transform.position;
             playerStats = GetComponent<PlayerStats>();
             networkIdentity = GetComponent<NetworkIdentity>();
-            username = networkIdentity.GetID();
         }
 
         // Update is called once per frame
@@ -83,7 +83,7 @@ namespace Project.Player
                     NavMeshHit navHit = new NavMeshHit();
                     //Don't try to move if we didn't hit a navmesh
                     //We do want to move if we hit an interactable and we want to begin the interaction, we also don't want to move once inside the interaction.
-                    if (!isInInteraction)
+                    if (!isInInteraction && !isChatFocused)
                     {
                         if (NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path))
                         {
