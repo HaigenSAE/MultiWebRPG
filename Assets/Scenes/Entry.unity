@@ -1802,7 +1802,7 @@ GameObject:
   - component: {fileID: 1209186833}
   m_Layer: 0
   m_Name: '[ Code - Networking ]'
-  m_TagString: Untagged
+  m_TagString: NetworkClient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1829,6 +1829,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 2273309408628922415, guid: c48cd775782d5a845bd13d861f1a6dea,
     type: 3}
   networkLogin: {fileID: 1209186832}
+  networkChatbox: {fileID: 0}
+  localPlayerObj: {fileID: 0}
 --- !u!4 &1209186830
 Transform:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ namespace Project.Player
         private bool doMove;
         public Vector3 destination;
         public PlayerStats playerStats;
+        public string username;
 
         [Header("Class References")]
 		[SerializeField]
@@ -26,6 +27,7 @@ namespace Project.Player
             destination = transform.position;
             playerStats = GetComponent<PlayerStats>();
             networkIdentity = GetComponent<NetworkIdentity>();
+            username = networkIdentity.GetID();
         }
 
         // Update is called once per frame

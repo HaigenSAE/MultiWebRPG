@@ -84,7 +84,7 @@ io.on('connection', function(socket){
                         //assign data
                         player = myData;
                         player.id = authUID;
-                        console.log('loaded player: ', player);
+                        //console.log('loaded player: ', player);
                         socket.emit('loggedIn', {id: thisPlayerID});
                     }  
                 });
@@ -178,12 +178,10 @@ io.on('connection', function(socket){
         console.log('entering game');
         //Tell the client that this is our id for the server
         socket.emit('register', {id: thisPlayerID});
-        console.log(player);
+        //console.log(player);
         socket.emit('spawn', player); //Tell myself I have spawned
         socket.broadcast.emit('spawn', player); //Tell others I have spawned
     });
-    
-    
 
     //Load players and playerinfo
     for(var playerID in players){
@@ -191,6 +189,10 @@ io.on('connection', function(socket){
             socket.emit('spawn', players[playerID]);
         }
     }
+
+    socket.on('newChatMessage', function(data){
+        socket.broadcast.emit('receiveChatMessage', data.text);
+    });
 
     //Positional Data from Client
     socket.on('updatePosition', function(data) {
@@ -223,7 +225,7 @@ io.on('connection', function(socket){
     //save info to database
     socket.on('saveData', function(data) {
         console.log('save to db');
-        console.log(data); 
+        //console.log(data); 
         for(var i = 0; i < 6; i ++)
         {
             player.playerStats.skills[i] = data.playerStats.skills[i];

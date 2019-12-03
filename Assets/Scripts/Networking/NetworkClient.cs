@@ -16,10 +16,13 @@ namespace Project.Networking
         private GameObject playerPrefab;//
 
         public NetworkLogin networkLogin;
+        public NetworkChatbox networkChatbox;
+
+        public GameObject localPlayerObj;
 
         public static string ClientID { get; private set; }
 
-        private Dictionary<string, NetworkIdentity> serverObjects;
+        Dictionary<string, NetworkIdentity> serverObjects;
 
         // Start is called before the first frame update
         public override void Start()
@@ -33,6 +36,11 @@ namespace Project.Networking
         public override void Update()
         {
             base.Update();
+            if(ClientID != null)
+            {
+                if (serverObjects.ContainsKey(ClientID))
+                    localPlayerObj = serverObjects[ClientID].gameObject;
+            }
         }
 
         private void Initialize()
@@ -59,7 +67,7 @@ namespace Project.Networking
             On("loggedIn", (E) =>
             {
                 ClientID = E.data["id"].ToString().RemoveQuotes();
-                Debug.LogFormat("Our Client's ID ({0})", ClientID);
+                Debug.LogFormat("Our Client's ID ({0})", ClientID); 
                 networkLogin.successfulPass();
                 Emit("enterGame");
             });
@@ -155,6 +163,11 @@ namespace Project.Networking
                 PasswordIncorrect();
                 Debug.Log("PasswordIncorrect");
             });
+
+            On("receiveChatMessage", (E) =>
+            {
+                ReceiveChatMessage(E.data.str);
+            });
         }
 
         public void AlreadyExists()
@@ -184,6 +197,12 @@ namespace Project.Networking
             if (networkLogin)
                 networkLogin.incorrectPassword();
         }
+
+        public void ReceiveChatMessage(string message)
+        {
+            if (networkChatbox)
+                networkChatbox.ReceiveMessage(message);
+        }
     }
 
     [Serializable]
@@ -193,6 +212,7 @@ namespace Project.Networking
         public Position position;
         public PStats playerStats;
         public string minigameWon;
+        public string username;
     }
 
     [Serializable]
