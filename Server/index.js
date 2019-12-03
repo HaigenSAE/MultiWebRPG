@@ -182,15 +182,16 @@ io.on('connection', function(socket){
         socket.emit('register', {id: thisPlayerID});
         //console.log(player);
         socket.emit('spawn', player); //Tell myself I have spawned
+        //Load players and playerinfo
+        for(var playerID in players){
+            if(playerID != thisPlayerID){
+                socket.emit('spawn', players[playerID]);
+            }
+        }
         socket.broadcast.emit('spawn', player); //Tell others I have spawned
     });
 
-    //Load players and playerinfo
-    for(var playerID in players){
-        if(playerID != thisPlayerID){
-            socket.emit('spawn', players[playerID]);
-        }
-    }
+    
 
     socket.on('newChatMessage', function(data){
         socket.broadcast.emit('receiveChatMessage', data.text);
