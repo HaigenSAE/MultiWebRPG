@@ -61,7 +61,12 @@ namespace Project.Networking
                 Debug.LogFormat("Our Client's ID ({0})", ClientID);
                 networkLogin.successfulPass();
                 Emit("enterGame");
-                
+            });
+
+            On("updateId", (E) =>
+            {
+                ClientID = E.data["id"].ToString().RemoveQuotes();
+                Debug.LogFormat("Our Client's ID ({0})", ClientID);
             });
 
             On("loggedIn", (E) =>
@@ -148,6 +153,12 @@ namespace Project.Networking
                 Debug.Log("already exists");
             });
 
+            On("invalidEmail", (E) =>
+            {
+                InvalidEmail();
+                Debug.Log("invalid email");
+            });
+
             On("alreadyLoggedIn", (E) =>
             {
                 AlreadyLoggedIn();
@@ -168,7 +179,7 @@ namespace Project.Networking
 
             On("receiveChatMessage", (E) =>
             {
-                ReceiveChatMessage(E.data.str);
+                ReceiveChatMessage(E.data["text"].str);
             });
         }
 
@@ -177,6 +188,14 @@ namespace Project.Networking
             if(networkLogin)
             {
                 networkLogin.alreadyExists();
+            }
+        }
+
+        public void InvalidEmail()
+        {
+            if (networkLogin)
+            {
+                networkLogin.invalidEmail();
             }
         }
 

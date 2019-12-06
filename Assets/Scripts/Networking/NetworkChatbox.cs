@@ -20,14 +20,22 @@ namespace Project.Networking
 
         void Start()
         {
-            nc = GameObject.FindGameObjectWithTag("NetworkClient").GetComponent<NetworkClient>();
-            nc.networkChatbox = this;
+            if(GameObject.FindGameObjectWithTag("NetworkClient") != null)
+            {
+                nc = GameObject.FindGameObjectWithTag("NetworkClient").GetComponent<NetworkClient>();
+                nc.networkChatbox = this;
+            }
+            
         }
 
         void Update()
         {
-            player = nc.localPlayerObj;
-            player.GetComponent<Project.Player.PlayerManager>().isChatFocused = inputField.GetComponent<InputField>().isFocused;
+            if(nc != null)
+            {
+                player = nc.localPlayerObj;
+                player.GetComponent<Project.Player.PlayerManager>().isChatFocused = inputField.GetComponent<InputField>().isFocused;
+            }
+            
         }
 
         public void ReceiveMessage(string message)

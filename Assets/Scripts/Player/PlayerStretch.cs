@@ -20,15 +20,18 @@ namespace Project.Player
 
         void Update()
         {
-            if (Vector3.Distance(root.GetComponent<PlayerManager>().destination, transform.position) > 1)
+            if(!root.GetComponent<PlayerManager>().isChatFocused)
             {
-                newDest = root.GetComponent<PlayerManager>().destination;
-            }
-            else
-            {
-                newDest = transform.position;
-            }
-            SetPos(transform.position, newDest);
+                if (Vector3.Distance(root.GetComponent<PlayerManager>().destination, transform.position) > 1)
+                {
+                    newDest = root.GetComponent<PlayerManager>().destination;
+                }
+                else
+                {
+                    newDest = transform.position;
+                }
+                SetPos(transform.position, newDest);
+            } 
         }
 
         void SetPos(Vector3 start, Vector3 end)

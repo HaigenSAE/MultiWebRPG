@@ -33,7 +33,11 @@ namespace Project.Player
         // Update is called once per frame
         void Update()
 		{
-			if (networkIdentity.IsControlling())
+            if (isChatFocused)
+            {
+                doMove = false;
+            }
+            if (networkIdentity.IsControlling() && !isChatFocused)
 			{
 				CheckMovement();
 			}
@@ -72,6 +76,7 @@ namespace Project.Player
 
         private void CheckMovement()
 		{
+
             if (Input.GetMouseButton(0))
             {
                 //Raycasting
@@ -81,9 +86,10 @@ namespace Project.Player
                 {
                     NavMeshPath path = new NavMeshPath();
                     NavMeshHit navHit = new NavMeshHit();
+                    
                     //Don't try to move if we didn't hit a navmesh
                     //We do want to move if we hit an interactable and we want to begin the interaction, we also don't want to move once inside the interaction.
-                    if (!isInInteraction && !isChatFocused)
+                    if (!isInInteraction)
                     {
                         if (NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path))
                         {

@@ -61,15 +61,30 @@ namespace Project.Networking
         {
             if (passText.text.Length >= 6)
             {
-                LoginData lData = new LoginData();
-                lData.regoID = userText.text.ToString();
-                lData.password = passText.text.ToString();
-                lData.username = usernameText.text.ToString();
-                loginButton.gameObject.SetActive(false);
-                regoButton.gameObject.SetActive(false);
-                ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
-                Debug.Log("Creating new user with: " + lData.regoID);
-                
+                if(usernameText.text.Length > 3)
+                {
+                    if (userText.text.Length >= 8)
+                    {
+                        LoginData lData = new LoginData();
+                        lData.regoID = userText.text.ToString();
+                        lData.password = passText.text.ToString();
+                        lData.username = usernameText.text.ToString();
+                        loginButton.gameObject.SetActive(false);
+                        regoButton.gameObject.SetActive(false);
+                        ni.GetSocket().Emit("registerClient", new JSONObject(JsonUtility.ToJson(lData)));
+                        Debug.Log("Creating new user with: " + lData.regoID);
+                    }
+                    else
+                    {
+                        userExists.text = "Please enter a valid email address";
+                        userExists.gameObject.SetActive(true);
+                    }                    
+                }
+                else
+                {
+                    userExists.text = "Username must be at least 4 characters";
+                    userExists.gameObject.SetActive(true);
+                }             
             }
             else
             {
@@ -88,6 +103,14 @@ namespace Project.Networking
         public void alreadyExists()
         {
             userExists.text = "User already exists";
+            userExists.gameObject.SetActive(true);
+            loginButton.gameObject.SetActive(true);
+            regoButton.gameObject.SetActive(true);
+        }
+
+        public void invalidEmail()
+        {
+            userExists.text = "Email address is invalid";
             userExists.gameObject.SetActive(true);
             loginButton.gameObject.SetActive(true);
             regoButton.gameObject.SetActive(true);

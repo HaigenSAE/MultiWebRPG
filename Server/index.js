@@ -64,7 +64,6 @@ io.on('connection', function(socket){
                     if(!doc.exists)
                     {
                         console.log('no such player exists');
-                        socket.emit('registered', {id: thisPlayerID});
                     }
                     else if(players[authUID] != null)
                     {
@@ -78,12 +77,12 @@ io.on('connection', function(socket){
                         delete players[thisPlayerID];
                         delete sockets[thisPlayerID];
                         //setup new player
-                        players[authUID] = player;
-                        sockets[authUID] = socket;
-                        thisPlayerID = authUID;
                         //assign data
                         player = myData;
                         player.id = authUID;
+                        players[authUID] = player;
+                        sockets[authUID] = socket;
+                        thisPlayerID = authUID;
                         //console.log('loaded player: ', player);
                         socket.emit('loggedIn', {id: thisPlayerID});
                     }  
@@ -99,8 +98,9 @@ io.on('connection', function(socket){
                         socket.emit('incorrectPassword');
                     break;
                     case 'auth/email-already-in-use':
-                    socket.emit('alreadyExists');
-                    console.log('alreadyExists');
+                        socket.emit('alreadyExists');
+                        console.log('alreadyExists');
+                    break;
                 }
                 console.log(error.code);
             });           
@@ -124,13 +124,13 @@ io.on('connection', function(socket){
                         { 
                             delete players[thisPlayerID];
                             delete sockets[thisPlayerID];
-                            //setup new player
-                            players[authUID] = player;
-                            sockets[authUID] = socket;
-                            //assign data
+                             //assign data
                             player.id = authUID;
                             player.username = data.username;
                             thisPlayerID = authUID;
+                            //setup new player
+                            players[authUID] = player;
+                            sockets[authUID] = socket;
                             usersRef.doc(authUID.toString()).set({
                                 username: player.username,
                                 playerStats: JSON.parse(JSON.stringify(player.playerStats)),
@@ -167,8 +167,12 @@ io.on('connection', function(socket){
                         socket.emit('incorrectPassword');
                     break;
                     case 'auth/email-already-in-use':
-                    socket.emit('alreadyExists');
-                    console.log('alreadyExists');
+                        socket.emit('alreadyExists');
+                        console.log('alreadyExists');
+                    break;
+                    case 'auth/invalid-email':
+                        socket.emit('invalidEmail');
+                    break;
                 }
                 console.log(error);
             });     
@@ -178,23 +182,20 @@ io.on('connection', function(socket){
     //bring them in
     socket.on('enterGame', function(data){
         console.log('entering game');
-        //Tell the client that this is our id for the server
-        socket.emit('register', {id: thisPlayerID});
-        //console.log(player);
         socket.emit('spawn', player); //Tell myself I have spawned
+        console.log('spawned player: ', thisPlayerID);
         //Load players and playerinfo
         for(var playerID in players){
-            if(playerID != thisPlayerID){
+            if(playerID != thisPlayerID && playerID != undefined){
                 socket.emit('spawn', players[playerID]);
+                console.log('spawned player from array: ', playerID);
             }
         }
         socket.broadcast.emit('spawn', player); //Tell others I have spawned
     });
 
-    
-
     socket.on('newChatMessage', function(data){
-        socket.broadcast.emit('receiveChatMessage', data.text);
+        socket.broadcast.emit('receiveChatMessage', data);
     });
 
     //Positional Data from Client

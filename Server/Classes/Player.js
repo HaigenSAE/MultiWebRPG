@@ -6,7 +6,7 @@ var PlayerStats = require('./PlayerStats');
 module.exports = class Player {
     constructor() {
         this.username = '';
-        this.id = shortID.generate();
+        this.id = shortID.generate().toString();
         this.position = new Vector3();
         this.position2D = new Vector2();
         this.playerStats = new PlayerStats();
